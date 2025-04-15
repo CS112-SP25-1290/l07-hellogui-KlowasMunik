@@ -1,26 +1,88 @@
-package edu.miracosta.cs112.lab07;//package name here depending on your IDE
+package edu.miracosta.cs112.lab07;
 
-import javafx.application.Application;  //abstract class used for JavaFX GUI's
-import javafx.stage.Stage;              //class for GUI window
-import javafx.scene.Scene;              //class for specific view in GUI window
-import javafx.scene.layout.VBox;        //class for layout pane, organized top-to-bottom
-import javafx.scene.control.Label;      //class for label component
-import javafx.scene.control.Button;     //class for button component
-import javafx.event.EventHandler;       //interface for handling events
-import javafx.event.ActionEvent;        //class for type of event for action (like button or key pressed)
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
-public class HelloApplication extends Application  { //inheriting core functionality + this class will handle events
+public class HelloApplication extends Application implements EventHandler<ActionEvent> {
     /*** GUI COMPONENTS ***/
-    // TODO: follow step 25 in README.md to create reference variables
+    private Label topLabel;
+    private Label bottomLabel;
+    private Button topLeftButton;
+    private Button bottomRightButton;
+    private TextField textField;
+    private int buttonPressCount = 0;
 
     /*** DRIVER main ***/
     public static void main(String[] args) {
-        launch(args); //method from Application class, must be called to setup javafx application
+        launch(args);
     }
 
-    // TODO: follow steps 2-9 in README.md to create a start method
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Hello GUI: Your Name");
+        StackPane layout = new StackPane();
+        Scene scene = new Scene(layout, 300, 300);
 
-    // TODO: follow steps 10-21 in README.md to add objects to your layout (inside start)
+        Label label = new Label();
+        label.setText("Hello GUI World");
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.setBottomAnchor(label, 0.0);
+        anchorPane.setRightAnchor(label, 0.0);
+        anchorPane.getChildren().add(label);
+        layout.getChildren().add(anchorPane);
 
-    // TODO: follow steps 22-34 in README.md to create an event handler
+        topLabel = new Label("Top Label");
+        bottomLabel = new Label("Bottom Label");
+        topLeftButton = new Button("Change Text");
+        bottomRightButton = new Button("Count Press");
+
+        AnchorPane mainAnchor = new AnchorPane();
+        mainAnchor.setTopAnchor(topLabel, 10.0);
+        mainAnchor.setLeftAnchor(topLabel, 10.0);
+        mainAnchor.setBottomAnchor(bottomLabel, 10.0);
+        mainAnchor.setLeftAnchor(bottomLabel, 10.0);
+        mainAnchor.setTopAnchor(topLeftButton, 10.0);
+        mainAnchor.setRightAnchor(topLeftButton, 10.0);
+        mainAnchor.setBottomAnchor(bottomRightButton, 10.0);
+        mainAnchor.setRightAnchor(bottomRightButton, 10.0);
+
+        mainAnchor.getChildren().addAll(topLabel, bottomLabel, topLeftButton, bottomRightButton);
+        layout.getChildren().clear();
+        layout.getChildren().add(mainAnchor);
+
+        textField = new TextField();
+        mainAnchor.setBottomAnchor(textField, 100.0);
+        mainAnchor.setLeftAnchor(textField, 50.0);
+        mainAnchor.setRightAnchor(textField, 50.0);
+        mainAnchor.getChildren().add(textField);
+
+        topLeftButton.setOnAction(this);
+        bottomRightButton.setOnAction(this);
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    @Override
+    public void handle(ActionEvent actionEvent) {
+        if (actionEvent.getSource() == topLeftButton) {
+            String inputText = textField.getText();
+            if (!inputText.isEmpty()) {
+                topLabel.setText(inputText);
+            } else {
+                topLabel.setText("Enter text first!");
+            }
+        } else if (actionEvent.getSource() == bottomRightButton) {
+            buttonPressCount++;
+            bottomLabel.setText("Presses: " + buttonPressCount);
+        }
+    }
 }
